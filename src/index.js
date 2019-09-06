@@ -47,13 +47,13 @@ class KeyvMssql extends EventEmitter {
 
   }
 
-  async get(key) {
+  get(key) {
     const select = this.msql.select({
       key
     }).where({
       'key': key
     }).returning('value')
-    const rows = await Promise.resolve(this.query(select).catch(RequestError));
+    const rows = Promise.resolve(this.query(select).catch(RequestError));
 
     if (rows === undefined) {
       return undefined;
@@ -62,10 +62,10 @@ class KeyvMssql extends EventEmitter {
     if (row === undefined) {
       return undefined;
     }
-    return row.value;
+    return row;
   }
 
-  async set(key, value) {
+  set(key, value) {
 
     value = value.replace(/\\/g, '\\\\').replace(/['"]/g, '\"');
 
@@ -85,26 +85,24 @@ class KeyvMssql extends EventEmitter {
     }
   }
 
-
-  async delete(key) {
+  delete(key) {
     const select = this.msql.select(key)
 
     const del = this.msql.where({
       'key': key
     }).del();
 
-    const rows = await Promise.resolve(this.query(select).catch(RequestError));
+    const rows = Promise.resolve(this.query(select).catch(RequestError));
     const row = rows[0];
     if (row === undefined) {
       return false;
     }
     return this.query(del).then(true);
   }
-
-  async clear() {
+  clear() {
     const del = this.msql.delete(this.entry)
     try {
-      await Promise.resolve(this.query(del).catch(RequestError));
+      Promise.resolve(this.query(del).catch(RequestError));
       return undefined;
     } catch (Error) {
       return Error
