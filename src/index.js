@@ -37,7 +37,7 @@ class KeyvMssql extends EventEmitter {
     Sql.schema.hasTable('keyv')
       .then(true, this.entry = Sql.schema.createTable('keyv',
         table => {
-          table.string('key').primary().notNullable().unique()
+          table.string('key').primary().notNullable().unique().index()
           table.enu('value').nullable().defaultTo(null);
         }))
 
@@ -63,7 +63,9 @@ class KeyvMssql extends EventEmitter {
   }
 
   async get(key) {
-    const select = this.msql.select().from('keyv').where({
+    const select = this.msql.select({
+      key
+    }).where({
       'key': key
     }).returning('value')
     const rows = await Promise.resolve(this.query(select).catch(RequestError));
