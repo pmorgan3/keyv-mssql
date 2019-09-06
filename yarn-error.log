@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn upgrade lodash
+  /usr/local/bin/node /usr/local/bin/yarn add @types/knex
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/share/rvm/bin:/home/honest/.vimpkg/bin:/opt/mssql-tools/bin

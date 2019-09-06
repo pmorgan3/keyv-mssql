@@ -43,10 +43,6 @@ class KeyvMssql extends EventEmitter {
 
     this.pool = new ConnectionPool(config);
 
-    try {
-      return Sql('keyv').connection(connection);
-    } catch (error) {}
-
     // This actually connects to the db, I believe
     this.opts.connect = () => Promise.resolve(this.pool.connect()
       .then((pool) => {
@@ -67,8 +63,14 @@ class KeyvMssql extends EventEmitter {
   }
 
   async get(key) {
-    const select = this.msql.select(key).from('keyv')
+    const select = this.msql.select().from('keyv').where({
+      'key': key
+    }).returning('value')
     const rows = await Promise.resolve(this.query(select).catch(RequestError));
+
+    if (rows === undefined) {
+      return undefined;
+    }
     const row = rows[0];
     if (row === undefined) {
       return undefined;
@@ -83,7 +85,7 @@ class KeyvMssql extends EventEmitter {
     // conflicts.
     //
     // Right?
-    this.delete(key)
+
     value = value.replace(/\\/g, '\\\\');
     value = value.replace(/['"]/g, '\"');
     let upsert = this.msql.insert({
@@ -104,7 +106,7 @@ class KeyvMssql extends EventEmitter {
 
 
   async delete(key) {
-    const select = this.msql.select(key);
+    const select = this.msql.select(key)
 
     const del = this.msql.where({
       'key': key
