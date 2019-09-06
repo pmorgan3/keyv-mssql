@@ -10,7 +10,7 @@
 - this.opts
 
   - Object
-  - unsure of it's purpose
+  - unsure of it's purpose but it was in the original keyvsql so 🤷
 
 - this.opts.connect
 
