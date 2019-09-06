@@ -3,6 +3,7 @@ const ConnectionError = require('tedious').ConnectionError;
 const EventEmitter = require('events');
 const ConnectionPool = require('mssql').ConnectionPool;
 const Mssql = require('mssql')
+const config = require('./config')
 const Sql = require('knex')({
   client: 'mssql',
   connection: {
@@ -13,14 +14,6 @@ const Sql = require('knex')({
   },
   useNullAsDefault: true
 })
-
-const config = {
-  user: 'SA',
-  password: 'Password1',
-  server: 'localhost',
-  database: 'TestDB',
-  url: 'mssql://localhost:1433'
-}
 
 class KeyvMssql extends EventEmitter {
 
