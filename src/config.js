@@ -19,4 +19,4 @@ const knex_config = {
     useNullAsDefault: true
 }
 
-module.exports.knex_config = knex_config
+module.exports.knex = knex_config

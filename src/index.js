@@ -4,8 +4,8 @@ const EventEmitter = require('events');
 const ConnectionPool = require('mssql').ConnectionPool;
 const Mssql = require('mssql')
 const config = require('./config').config
-const knex_config = require('./config').knex_config
-const Sql = require('knex')(...knex_config)
+const knex_config = require('./config').knex
+const Sql = require('knex')(knex_config)
 
 class KeyvMssql extends EventEmitter {
 
