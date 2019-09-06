@@ -19,41 +19,54 @@ class KeyvMssql extends EventEmitter {
     }, opts);
 
     // this creates (supposedly) the db table to be used
-    Sql.schema.hasTable('keyv')
-      .then(true, this.entry = Sql.schema.createTable('keyv',
-        table => {
-          table.string('key').primary().notNullable().unique().index()
-          table.enu('value').nullable().defaultTo(null);
-        }))
+    // Sql.schema.hasTable('keyv')
+    //   .then(true, this.entry = Sql.schema.createTable('keyv',
+    //     table => {
+    //       table.string('key').primary().notNullable().unique().index()
+    //       table.enu('value').nullable().defaultTo(null);
+    //     }))
 
-    this.pool = new ConnectionPool(config);
+    //this.pool = new ConnectionPool(config);
 
     // This actually connects to the db, I believe
-    this.opts.connect = () => Promise.resolve(this.pool.connect()
-      .then((pool) => {
-        return sql => pool.query(sql).then((data) => data.recordsets)
-          .catch(ConnectionError)
-      })).catch(RequestError)
+    // this.opts.connect = () => this.pool.connect()
+    //   .then(pool => {
 
-    this.msql = Sql('keyv')
+    //     return sql => pool.query(sql).then((data) => data.recordsets)
+    //       .catch(ConnectionError)
+    //   }).catch(RequestError)
+
+    //this.msql = Sql('keyv')
+    this.keyvtable = Sql.schema.hasTable(this.opts.table)
+      .then(() => Sql(this.opts.table),
+        () => {
+          return Sql.schema.createTable(this.opts.table,
+            table => {
+              table.string('key').primary().notNullable().unique().index()
+              table.enu('value').nullable().defaultTo(null);
+            }).then(() => Sql(this.opts.table));
+        });
 
 
-    const connected = this.pool.connect()
-      .then((pool) => pool.query())
-      .catch(err => this.emit('error', err));
+    // const connected = this.pool.connect()
+    //   .then((pool) => pool.query())
+    //   .catch(err => this.emit('error', err));
 
-    this.query = (sqlString) => connected
-      .then(query => query(sqlString));
+    // this.query = (sqlString) => this.mssql
+    //   .then(sql => {
+    //     console.log(sqlString);
+    //     return sql.query(sqlString);
+    //   });
 
   }
 
-  get(key) {
-    const select = this.msql.select({
+  async get(key) {
+    const client = await this.keyvtable;
+    const rows = await client.select({
       key
     }).where({
       'key': key
-    }).returning('value')
-    const rows = Promise.resolve(this.query(select).catch(RequestError));
+    }).returning('value');
 
     if (rows === undefined) {
       return undefined;
@@ -65,47 +78,61 @@ class KeyvMssql extends EventEmitter {
     return row;
   }
 
-  set(key, value) {
+  async set(key, value) {
 
     value = value.replace(/\\/g, '\\\\').replace(/['"]/g, '\"');
 
-    let upsert = this.msql.insert({
-      'key': key,
-      'value': value
-    })
-
+    const client = await this.keyvtable;
+    let setResult = Promise.resolve(undefined);
+    let insertSucceeded = false;
     try {
-      return Promise.resolve(this.query(upsert).catch(RequestError))
-    } catch (RequestError) {
-      upsert = this.msql.update({
+      setResult = await client.insert({
         'key': key,
         'value': value
-      })
-      return Promise.resolve(this.query(upsert).catch(RequestError))
+      });
+      console.log('insert succeeded for', key, value);
+      insertSucceeded = true;
+    } catch (insertErr) {
+      console.log('insert failed', insertErr);
     }
+    if (!insertSucceeded) {
+      try {
+        setResult = await client.update({
+          'key': key,
+          'value': value
+        });
+      } catch (updateErr) {
+        console.log('update failed', updateErr);
+      }
+    }
+    return setResult;
+
   }
 
-  delete(key) {
-    const select = this.msql.select(key)
-
-    const del = this.msql.where({
-      'key': key
-    }).del();
-
-    const rows = Promise.resolve(this.query(select).catch(RequestError));
-    const row = rows[0];
-    if (row === undefined) {
-      return false;
+  async delete(key) {
+    const client = await this.keyvtable;
+    const exists = await client.where({
+      key
+    }).select({
+      key
+    });
+    console.log('exists', exists);
+    if (exists) {
+      return client.where({
+        key
+      }).del().then(() => true);
     }
-    return this.query(del).then(true);
+    return false;
   }
-  clear() {
-    const del = this.msql.delete(this.entry)
+  async clear() {
+    //const del = this.mssql.delete(this.entry)
+    const client = await this.keyvtable;
     try {
-      Promise.resolve(this.query(del).catch(RequestError));
+      return client.where({}).del().then(() => undefined);
       return undefined;
-    } catch (Error) {
-      return Error
+    } catch (error) {
+      console.log('clear failed', error)
+      return error
     }
   }
 
