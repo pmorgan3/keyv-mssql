@@ -80,14 +80,8 @@ class KeyvMssql extends EventEmitter {
 
   async set(key, value) {
 
-    // if we're inserting an existing key, 
-    // it makes sense to delete it as to not cause
-    // conflicts.
-    //
-    // Right?
+    value = value.replace(/\\/g, '\\\\').replace(/['"]/g, '\"');
 
-    value = value.replace(/\\/g, '\\\\');
-    value = value.replace(/['"]/g, '\"');
     let upsert = this.msql.insert({
       'key': key,
       'value': value
