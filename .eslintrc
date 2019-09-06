@@ -1,0 +1,19 @@
+{
+    "parserOptions": {
+        "ecmaFeatures": {
+            "arrowFunctions": true,
+            "binaryLiterals": true,
+            "classes": true,
+            "modules": true,
+            "objectLiteralShorthandProperties": true,
+
+
+            "destructuring": true,
+
+
+        },
+        "ecmaVersion": 8,
+        "sourceType": "module"
+    }
+
+}

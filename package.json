@@ -1,0 +1,36 @@
+{
+  "name": "keyv-mssql",
+  "version": "1.0.0",
+  "description": "mssql adapter for keyv",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "author": "Paul Morgan III",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@keyv/sql": "^1.1.2",
+    "@keyv/test-suite": "^1.6.11",
+    "@types/any-db": "^2.1.30",
+    "@types/anydb-sql": "^0.6.46",
+    "@types/events": "^3.0.0",
+    "@types/keyv": "^3.1.0",
+    "@types/knex": "^0.16.1",
+    "@types/mssql": "^4.3.0",
+    "EventEmitter": "^1.0.0",
+    "any-db": "^2.2.1",
+    "any-db-mssql": "^0.1.0",
+    "ava": "^2.3.0",
+    "global": "^4.4.0",
+    "keyv": "^3.1.0",
+    "knex": "^0.19.3",
+    "mssql": "^5.1.0",
+    "n": "^6.0.1",
+    "node-sql": "^1.1.5",
+    "tedious": "^6.3.0"
+  },
+  "devDependencies": {}
+}
