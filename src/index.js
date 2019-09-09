@@ -1,4 +1,4 @@
-const RequestError = require('tedious').RequestError;
+const tedious = require('tedious');
 const ConnectionError = require('tedious').ConnectionError;
 const EventEmitter = require('events');
 const ConnectionPool = require('mssql').ConnectionPool;
@@ -13,7 +13,6 @@ class KeyvMssql extends EventEmitter {
     super();
     this.ttlSupport = false;
     this.opts = Object.assign({
-
       table: 'keyv',
       keySize: 255
     }, opts);
@@ -37,16 +36,16 @@ class KeyvMssql extends EventEmitter {
     //   }).catch(RequestError)
 
     //this.msql = Sql('keyv')
-    this.keyvtable = Sql.schema.hasTable(this.opts.table)
-      .then(() => Sql(this.opts.table),
-        () => {
-          return Sql.schema.createTable(this.opts.table,
-            table => {
-              table.string('key').primary().notNullable().unique().index()
-              table.enu('value').nullable().defaultTo(null);
-            }).then(() => Sql(this.opts.table));
-        });
 
+    Sql.schema.hasTable(this.opts.table)
+      .then(this.keyvtable = Sql(this.opts.table),
+        () => {
+          Sql.schema.createTable(this.opts.table, table => {
+            table.string('key').primary().notNullable().unique().index();
+            table.enu('value').nullable().defaultTo(null);
+          });
+          this.keyvtable = Sql(this.opts.table);
+        });
 
     // const connected = this.pool.connect()
     //   .then((pool) => pool.query())
@@ -61,11 +60,11 @@ class KeyvMssql extends EventEmitter {
   }
 
   async get(key) {
-    const client = await this.keyvtable;
+    const client = this.keyvtable;
     const rows = await client.select({
       key
     }).where({
-      'key': key
+      key
     }).returning('value');
 
     if (rows === undefined) {
@@ -82,35 +81,35 @@ class KeyvMssql extends EventEmitter {
 
     value = value.replace(/\\/g, '\\\\').replace(/['"]/g, '\"');
 
-    const client = await this.keyvtable;
+    const client = this.keyvtable;
     let setResult = Promise.resolve(undefined);
     let insertSucceeded = false;
     try {
-      setResult = await client.insert({
-        'key': key,
-        'value': value
-      });
+      setResult = client.insert({
+        key,
+        value
+      }).catch(tedious.RequestError);
       console.log('insert succeeded for', key, value);
       insertSucceeded = true;
-    } catch (insertErr) {
-      console.log('insert failed', insertErr);
+    } catch (requestError) {
+      console.log('insert failed', requestError);
     }
     if (!insertSucceeded) {
       try {
-        setResult = await client.update({
-          'key': key,
-          'value': value
+        setResult = client.update({
+          key,
+          value
         });
       } catch (updateErr) {
         console.log('update failed', updateErr);
       }
     }
-    return setResult;
+    return insertSucceeded;
 
   }
 
   async delete(key) {
-    const client = await this.keyvtable;
+    const client = this.keyvtable;
     const exists = await client.where({
       key
     }).select({
@@ -126,7 +125,7 @@ class KeyvMssql extends EventEmitter {
   }
   async clear() {
     //const del = this.mssql.delete(this.entry)
-    const client = await this.keyvtable;
+    const client = this.keyvtable;
     try {
       return client.where({}).del().then(() => undefined);
       return undefined;
