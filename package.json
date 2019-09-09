@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "ava -m='*sets a value' --verbose",
-    "test:all": "ava",
+    "test:all": "ava --verbose",
     "dbtest": "node src/dbtest.js"
   },
   "author": "Paul Morgan III",

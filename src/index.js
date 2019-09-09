@@ -61,19 +61,14 @@ class KeyvMssql extends EventEmitter {
 
   async get(key) {
     const client = this.keyvtable;
-    const rows = await client.select({
-      key
-    }).where({
-      key
-    }).returning('value');
+    const row = await client.select('*').where({
+      'key': key
+    }).returning('value').then(p => p[0]).catch(TypeError);
 
-    if (rows === undefined) {
-      return undefined;
-    }
-    const row = rows[0];
     if (row === undefined) {
       return undefined;
     }
+
     return row;
   }
 
@@ -105,16 +100,13 @@ class KeyvMssql extends EventEmitter {
       }
     }
     return insertSucceeded;
-
   }
 
   async delete(key) {
     const client = this.keyvtable;
     const exists = await client.where({
       key
-    }).select({
-      key
-    });
+    }).select('*');
     console.log('exists', exists);
     if (exists) {
       return client.where({
