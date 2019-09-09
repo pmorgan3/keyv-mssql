@@ -72,7 +72,7 @@ class KeyvMssql extends EventEmitter {
 
   async set(key, value) {
 
-    value = value.replace(/\\/g, '\\\\').replace(/['"]/g, '\"');
+    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/\0/g, 'null');
 
     const client = this.keyvtable;
     let setResult = Promise.resolve(undefined);
@@ -111,8 +111,8 @@ class KeyvMssql extends EventEmitter {
     console.log('exists', exists);
     if (exists) {
       return client.where({
-        key
-      }).del().then(() => true);
+        'key': key
+      }).del().then(() => true, () => false);
     }
     return false;
   }

@@ -6,8 +6,9 @@
             "classes": true,
             "modules": true,
             "objectLiteralShorthandProperties": true,
-            "destructuring": true
-
+            "destructuring": true,
+            "objectLiteralShorthandMethods": true,
+            "spread": true
 
         },
         "ecmaVersion": 8,
