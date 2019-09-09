@@ -1,8 +1,5 @@
 const tedious = require('tedious');
-const ConnectionError = require('tedious').ConnectionError;
 const EventEmitter = require('events');
-const ConnectionPool = require('mssql').ConnectionPool;
-const Mssql = require('mssql')
 const config = require('./config').config
 const knex_config = require('./config').knex
 const Sql = require('knex')(knex_config)
@@ -109,7 +106,7 @@ class KeyvMssql extends EventEmitter {
       return false;
     const client = this.keyvtable;
     const exists = await client.where({
-      key
+      'key': key
     }).select('*');
     console.log('exists', exists);
     if (exists) {
@@ -124,7 +121,6 @@ class KeyvMssql extends EventEmitter {
     const client = this.keyvtable;
     try {
       return client.where({}).del().then(() => undefined);
-      return undefined;
     } catch (error) {
       console.log('clear failed', error)
       return error
