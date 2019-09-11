@@ -74,7 +74,7 @@ class KeyvMssql extends EventEmitter {
 
     value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '').replace('"', "\"");
 
-    const client = this.keyvtable;
+    const client = Sql(this.opts.table);
     let setResult = Promise.resolve(undefined);
     let insertSucceeded = false;
     //try {
@@ -111,7 +111,7 @@ class KeyvMssql extends EventEmitter {
     let doesKeyExist = await this.get(key)
     if (doesKeyExist === undefined)
       return false;
-    const client = this.keyvtable;
+    const client = Sql(this.opts.table);
     const exists = await client.where({
       'key': key
     }).select('*');
@@ -125,7 +125,7 @@ class KeyvMssql extends EventEmitter {
   }
   async clear() {
     //const del = this.mssql.delete(this.entry)
-    const client = this.keyvtable;
+    const client = Sql(this.opts.table);
     try {
       return client.where({}).del().then(() => undefined);
     } catch (error) {
