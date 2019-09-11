@@ -78,10 +78,10 @@ class KeyvMssql extends EventEmitter {
     let setResult = Promise.resolve(undefined);
     let insertSucceeded = false;
     //try {
-    setResult = client.insert({
+    await client.insert({
       'key': key,
       'value': value
-    }).catch(tedious.RequestError).then(() => client.update({
+    }).catch(tedious.RequestError).then(async () => await client.update({
       'key': key,
       'value': value
     }));
