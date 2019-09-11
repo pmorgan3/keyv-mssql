@@ -39,7 +39,7 @@ class KeyvMssql extends EventEmitter {
         () => {
           Sql.schema.createTable(this.opts.table, table => {
             table.string('key').primary().notNullable().unique().index();
-            table.enu('value').nullable().defaultTo(null);
+            table.text('value').nullable().defaultTo(null);
           });
           this.keyvtable = Sql(this.opts.table);
         });
@@ -72,7 +72,7 @@ class KeyvMssql extends EventEmitter {
 
   async set(key, value) {
 
-    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/\0/g, 'null');
+    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/\0/g, '');
 
     const client = this.keyvtable;
     let setResult = Promise.resolve(undefined);
