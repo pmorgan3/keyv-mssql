@@ -14,26 +14,6 @@ class KeyvMssql extends EventEmitter {
       keySize: 255
     }, opts);
 
-    // this creates (supposedly) the db table to be used
-    // Sql.schema.hasTable('keyv')
-    //   .then(true, this.entry = Sql.schema.createTable('keyv',
-    //     table => {
-    //       table.string('key').primary().notNullable().unique().index()
-    //       table.enu('value').nullable().defaultTo(null);
-    //     }))
-
-    //this.pool = new ConnectionPool(config);
-
-    // This actually connects to the db, I believe
-    // this.opts.connect = () => this.pool.connect()
-    //   .then(pool => {
-
-    //     return sql => pool.query(sql).then((data) => data.recordsets)
-    //       .catch(ConnectionError)
-    //   }).catch(RequestError)
-
-    //this.msql = Sql('keyv')
-
     Sql.schema.hasTable(this.opts.table)
       .then(this.keyvtable = Sql(this.opts.table),
         () => {
@@ -43,16 +23,6 @@ class KeyvMssql extends EventEmitter {
           });
           this.keyvtable = Sql(this.opts.table);
         });
-
-    // const connected = this.pool.connect()
-    //   .then((pool) => pool.query())
-    //   .catch(err => this.emit('error', err));
-
-    // this.query = (sqlString) => this.mssql
-    //   .then(sql => {
-    //     console.log(sqlString);
-    //     return sql.query(sqlString);
-    //   });
 
   }
 
@@ -72,7 +42,7 @@ class KeyvMssql extends EventEmitter {
 
   async set(key, value) {
 
-    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '').replace('"', "\"");
+    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '').replace('"', '\"');
 
     const client = Sql(this.opts.table);
     let setResult = Promise.resolve(undefined);
@@ -89,21 +59,6 @@ class KeyvMssql extends EventEmitter {
     console.log('insert succeeded for', key, value);
     insertSucceeded = true;
 
-    /*  } catch (requestError) {
-       console.log('insert failed', requestError);
-     } */
-    /* if (!insertSucceeded) {
-      try {
-        setResult = client.update({
-          key,
-          value
-        });
-        insertSucceeded = true;
-
-      } catch (updateErr) {
-        console.log('update failed', updateErr);
-      }
-    } */
     return insertSucceeded;
   }
 
@@ -117,7 +72,7 @@ class KeyvMssql extends EventEmitter {
     }).select('*');
     console.log('exists', exists);
     if (exists) {
-      return client.where({
+      return await client.where({
         'key': key
       }).del().then(() => true, () => false);
     }
@@ -127,7 +82,7 @@ class KeyvMssql extends EventEmitter {
     //const del = this.mssql.delete(this.entry)
     const client = Sql(this.opts.table);
     try {
-      return client.where({}).del().then(() => undefined);
+      return await client.del().then(() => undefined);
     } catch (error) {
       console.log('clear failed', error)
       return error
