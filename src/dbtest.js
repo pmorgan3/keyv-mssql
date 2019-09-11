@@ -1,3 +1,4 @@
+const RequestError = require('tedious').RequestError
 const config = require('./config').config
 const knex_config = require('./config').knex
 const Sql = require('knex')(knex_config)
@@ -7,12 +8,15 @@ const testDb = async () => {
     const insertRes = await Sql('keyv').insert({
         key: 'foo',
         value: 'bar'
-    });
+    }).catch(RequestError).then(() => Sql('keyv').update({
+        key: 'foo',
+        value: 'foobar'
+    }))
     const selRes = await Sql('keyv').select();
 
     console.log(selRes, 'created');
-    let delRes = await Sql('keyv').del();
-    console.log('delRes', delRes);
+    /*  let delRes = await Sql('keyv').del();
+     console.log('delRes', delRes); */
     const selDelRes = await Sql('keyv').select();
     console.log('selDelRes', selDelRes);
 

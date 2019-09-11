@@ -11,6 +11,7 @@
             "spread": true
 
         },
+        "esversion": 8,
         "ecmaVersion": 8,
         "sourceType": "module"
     }

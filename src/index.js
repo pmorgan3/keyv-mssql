@@ -7,7 +7,7 @@ const Sql = require('knex')(knex_config)
 class KeyvMssql extends EventEmitter {
 
   constructor(opts) {
-    super();
+    super(opts);
     this.ttlSupport = false;
     this.opts = Object.assign({
       table: 'keyv',
@@ -58,45 +58,52 @@ class KeyvMssql extends EventEmitter {
 
   //! FUNCTIONAL
   async get(key) {
-    const client = this.keyvtable;
-    const row = await client.select('*').where({
-      key
+    const client = Sql(this.opts.table);
+    const row = await client.select('value').where({
+      'key': key
     }).returning('value').then(p => p[0]).catch(TypeError);
 
     if (row === undefined) {
       return undefined;
     }
 
-    return row;
+    return row['value'];
   }
 
   async set(key, value) {
 
-    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/\0/g, '');
+    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '').replace('"', "\"");
 
     const client = this.keyvtable;
     let setResult = Promise.resolve(undefined);
     let insertSucceeded = false;
-    try {
-      setResult = client.insert({
-        key,
-        value
-      }).catch(tedious.RequestError);
-      console.log('insert succeeded for', key, value);
-      insertSucceeded = true;
-    } catch (requestError) {
-      console.log('insert failed', requestError);
-    }
-    if (!insertSucceeded) {
+    //try {
+    setResult = client.insert({
+      'key': key,
+      'value': value
+    }).catch(tedious.RequestError).then(() => client.update({
+      'key': key,
+      'value': value
+    }));
+
+    console.log('insert succeeded for', key, value);
+    insertSucceeded = true;
+
+    /*  } catch (requestError) {
+       console.log('insert failed', requestError);
+     } */
+    /* if (!insertSucceeded) {
       try {
         setResult = client.update({
           key,
           value
         });
+        insertSucceeded = true;
+
       } catch (updateErr) {
         console.log('update failed', updateErr);
       }
-    }
+    } */
     return insertSucceeded;
   }
 
@@ -126,6 +133,5 @@ class KeyvMssql extends EventEmitter {
       return error
     }
   }
-
 }
 module.exports = KeyvMssql;

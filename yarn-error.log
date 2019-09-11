@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add @types/knex
+  /usr/local/bin/node /usr/local/bin/yarn add babel-eslint
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/share/rvm/bin:/home/honest/.vimpkg/bin:/opt/mssql-tools/bin
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: EACCES: permission denied, unlink '/home/honest/Documents/keyv-mssql/node_modules/array-each/LICENSE'
+  Error: EACCES: permission denied, mkdir '/home/honest/Documents/keyv-mssql/node_modules/babel-traverse/node_modules/globals'
 
 npm manifest: 
   {
@@ -23,7 +23,9 @@ npm manifest:
     "description": "mssql adapter for keyv",
     "main": "src/index.js",
     "scripts": {
-      "test": "ava"
+      "test": "ava -m='*sets a value' --verbose",
+      "test:all": "ava --verbose",
+      "dbtest": "node src/dbtest.js"
     },
     "author": "Paul Morgan III",
     "license": "MIT",

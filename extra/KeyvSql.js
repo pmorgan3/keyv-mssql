@@ -1,18 +1,17 @@
-/*
 const EventEmitter = require('events');
 const Sql = require('anydb-sql');
 const config = {
-    user: 'SA',
-    password: 'Password1',
-    adapter: 'mssql',
-    server: "localhost",
-    url: "mssql://localhost:1433/TestDB",
-    options: {
-      port: 1433,
-      encrypt: true,
-      database: 'TestDB'
-    }
-  }
+	user: 'SA',
+	password: 'Password1',
+	adapter: 'mssql',
+	server: "localhost",
+	url: "mssql://localhost:1433/TestDB",
+	options: {
+		port: 1433,
+		encrypt: true,
+		database: 'TestDB'
+	}
+}
 class KeyvSql extends EventEmitter {
 	constructor(opts) {
 		super();
@@ -27,8 +26,7 @@ class KeyvSql extends EventEmitter {
 
 		this.entry = sql.define({
 			name: this.opts.table,
-			columns: [
-				{
+			columns: [{
 					name: 'key',
 					primaryKey: true,
 					dataType: `VARCHAR(${Number(this.opts.keySize)})`
@@ -40,7 +38,7 @@ class KeyvSql extends EventEmitter {
 			]
 		});
 		const createTable = this.entry.create().ifNotExists().toString();
-        
+
 		const connected = this.opts.connect()
 			.then(query => query(createTable).then(() => query))
 			.catch(err => this.emit('error', err));
@@ -50,7 +48,9 @@ class KeyvSql extends EventEmitter {
 	}
 
 	get(key) {
-		const select = this.entry.select().where({ key }).toString();
+		const select = this.entry.select().where({
+			key
+		}).toString();
 		return this.query(select)
 			.then(rows => {
 				const row = rows[0];
@@ -67,16 +67,29 @@ class KeyvSql extends EventEmitter {
 			value = value.replace(/\\/g, '\\\\');
 		}
 		if (this.opts.dialect === 'postgres') {
-			upsert = this.entry.insert({ key, value }).onConflict({ columns: ['key'], update: ['value'] }).toString();
+			upsert = this.entry.insert({
+				key,
+				value
+			}).onConflict({
+				columns: ['key'],
+				update: ['value']
+			}).toString();
 		} else {
-			upsert = this.entry.replace({ key, value }).toString();
+			upsert = this.entry.replace({
+				key,
+				value
+			}).toString();
 		}
 		return this.query(upsert);
 	}
 
 	delete(key) {
-		const select = this.entry.select().where({ key }).toString();
-		const del = this.entry.delete().where({ key }).toString();
+		const select = this.entry.select().where({
+			key
+		}).toString();
+		const del = this.entry.delete().where({
+			key
+		}).toString();
 		return this.query(select)
 			.then(rows => {
 				const row = rows[0];
@@ -96,4 +109,3 @@ class KeyvSql extends EventEmitter {
 }
 
 module.exports = KeyvSql;
-*/
