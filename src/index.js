@@ -17,20 +17,21 @@ class KeyvMssql extends EventEmitter {
 
     Sql.schema
       .hasTable(this.opts.table)
-      .then((this.keyvtable = Sql(this.opts.table)), () => {
-        Sql.schema.createTable(this.opts.table, table => {
-          table
-            .string("key")
-            .primary()
-            .notNullable()
-            .unique()
-            .index();
-          table
-            .text("value")
-            .nullable()
-            .defaultTo(null);
-        });
-        this.keyvtable = Sql(this.opts.table);
+      .then(async (exists) => {
+        if (!exists) {
+          await Sql.schema.createTable(this.opts.table, table => {
+            table
+              .string("key")
+              .primary();
+            table
+              .text("value")
+              .nullable()
+              .defaultTo(null);
+          }).catch(err => this.emit(err));
+
+        }
+        this.keyvtable = Sql(this.opts.table)
+
       });
   }
 

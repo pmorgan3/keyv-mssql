@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn add ava
+  /usr/local/bin/node /usr/local/bin/yarn
 
 PATH: 
   /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/share/rvm/bin:/home/honest/.vimpkg/bin:/opt/mssql-tools/bin
@@ -23,32 +23,32 @@ npm manifest:
     "description": "mssql adapter for keyv",
     "main": "src/index.js",
     "scripts": {
-      "test": "ava -m='*sets a value' --verbose",
-      "test:all": "ava --verbose",
-      "dbtest": "node src/dbtest.js"
+      "test": "nyc ava --verbose"
     },
     "author": "Paul Morgan III",
     "license": "MIT",
     "directories": {
       "test": "test"
+  
     },
     "dependencies": {
-      "@keyv/sql": "^1.1.2",
+      "EventEmitter": "^1.0.0",
+      "global": "^4.4.0",
+      "knex": "^0.19.3",
+      "mssql": "^5.1.0",
+      "tedious": "^6.3.0"
+    },
+    "devDependencies": {
+      "keyv": "^3.1.0",
       "@keyv/test-suite": "^1.6.11",
+      "n": "^6.0.1",
       "@types/events": "^3.0.0",
       "@types/keyv": "^3.1.0",
       "@types/knex": "^0.16.1",
       "@types/mssql": "^4.3.0",
-      "EventEmitter": "^1.0.0",
       "ava": "^2.3.0",
-      "global": "^4.4.0",
-      "keyv": "^3.1.0",
-      "knex": "^0.19.3",
-      "mssql": "^5.1.0",
-      "n": "^6.0.1",
-      "tedious": "^6.3.0"
-    },
-    "devDependencies": {}
+      "nyc": "^14.1.1"
+    }
   }
 
 yarn manifest: 
