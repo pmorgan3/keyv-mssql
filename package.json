@@ -4,9 +4,7 @@
   "description": "mssql adapter for keyv",
   "main": "src/index.js",
   "scripts": {
-    "test": "ava -m='*sets a value' --verbose",
-    "test:all": "ava --verbose",
-    "dbtest": "node src/dbtest.js"
+    "test": "ava --verbose"
   },
   "author": "Paul Morgan III",
   "license": "MIT",

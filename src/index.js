@@ -74,8 +74,6 @@ class KeyvMssql extends EventEmitter {
             value: value
           }).catch(tedious.RequestError)
       );
-
-    console.log("insert succeeded for", key, value);
     insertSucceeded = true;
 
     return insertSucceeded;
@@ -90,7 +88,6 @@ class KeyvMssql extends EventEmitter {
         key: key
       })
       .select("*");
-    console.log("exists", exists);
     if (exists) {
       return await client
         .where({
@@ -103,7 +100,10 @@ class KeyvMssql extends EventEmitter {
   }
   async clear() {
     const client = Sql(this.opts.table);
-    return await client.where('key', 'like', `${this.namespace}:%`).del().from(this.opts.table)
+    return await client
+      .where('key', 'like', `${this.namespace}:%`)
+      .del()
+      .from(this.opts.table)
       .then(() => undefined)
   }
 }
