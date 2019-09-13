@@ -41,7 +41,7 @@ class KeyvMssql extends EventEmitter {
 
   async set(key, value) {
 
-    value = value.replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '').replace('"', '\"');
+    value = value.replace('"', '\"').replace(/\\/g, '\\\\').replace(/[(')+]/g, "''").replace(/[\0]+/g, '');
 
     const client = Sql(this.opts.table);
     let setResult = Promise.resolve(undefined);
@@ -81,10 +81,12 @@ class KeyvMssql extends EventEmitter {
     //const del = this.mssql.delete(this.entry)
     const client = Sql(this.opts.table);
     try {
-      return await client.del().then(() => undefined);
+      return await client.del().then(() => {
+        return undefined
+      });
     } catch (error) {
       console.log('clear failed', error)
-      return error
+      return undefined
     }
   }
 }
