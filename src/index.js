@@ -106,10 +106,11 @@ class KeyvMssql extends EventEmitter {
     //const del = this.mssql.delete(this.entry)
     const client = Sql(this.opts.table);
     try {
-      return await client.del().then(async () => await undefined, () => undefined);
+      return await client.del().from(this.opts.table)
+        .then(() => undefined)
     } catch (error) {
       console.log("clear failed", error);
-      return await undefined;
+      return undefined;
     }
   }
 }
