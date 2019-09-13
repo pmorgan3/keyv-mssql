@@ -26,7 +26,6 @@ class KeyvMssql extends EventEmitter {
 
   }
 
-  //! FUNCTIONAL
   async get(key) {
     const client = Sql(this.opts.table);
     const row = await client.select('value').where({
