@@ -103,10 +103,8 @@ class KeyvMssql extends EventEmitter {
   }
   async clear() {
     const client = Sql(this.opts.table);
-    //Sql.raw(`DELETE FROM ${this.opts.table}`)
-    await client.del().from(this.opts.table)
+    return await client.where('key', 'like', `${this.namespace}:%`).del().from(this.opts.table)
       .then(() => undefined)
-    return undefined
   }
 }
 module.exports = KeyvMssql;
