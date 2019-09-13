@@ -3,7 +3,8 @@ const config = {
     password: 'Password1',
     server: 'localhost',
     database: 'TestDB',
-    url: 'mssql://localhost:1433'
+    url: 'mssql://localhost:1433',
+    table: 'keyv'
 }
 
 module.exports.config = config

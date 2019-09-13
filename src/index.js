@@ -8,9 +8,8 @@ class KeyvMssql extends EventEmitter {
   constructor(opts) {
     super(opts);
     this.ttlSupport = false;
-    this.opts = Object.assign(
-      {
-        table: "keyv",
+    this.opts = Object.assign({
+        table: config.table,
         keySize: 255
       },
       opts
@@ -43,14 +42,14 @@ class KeyvMssql extends EventEmitter {
         key: key
       })
       .returning("value")
-      .then(p => p[0])
+      .then(async (p) => await p[0])
       .catch(TypeError);
 
     if (row === undefined) {
       return undefined;
     }
 
-    return row["value"];
+    return await row["value"];
   }
 
   async set(key, value) {
@@ -61,7 +60,7 @@ class KeyvMssql extends EventEmitter {
       .replace(/[\0]+/g, "");
 
     const client = Sql(this.opts.table);
-    let setResult = Promise.resolve(undefined);
+
     let insertSucceeded = false;
     //try {
     await client
@@ -108,12 +107,10 @@ class KeyvMssql extends EventEmitter {
     //const del = this.mssql.delete(this.entry)
     const client = Sql(this.opts.table);
     try {
-      return await client.del().then(() => {
-        return undefined;
-      });
+      return await client.del().then(async () => await undefined);
     } catch (error) {
       console.log("clear failed", error);
-      return undefined;
+      return await undefined;
     }
   }
 }
