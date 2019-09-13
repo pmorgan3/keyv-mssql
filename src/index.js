@@ -61,7 +61,6 @@ class KeyvMssql extends EventEmitter {
     const client = Sql(this.opts.table);
 
     let insertSucceeded = false;
-    //try {
     await client
       .insert({
         key: key,
@@ -73,7 +72,7 @@ class KeyvMssql extends EventEmitter {
           await client.update({
             key: key,
             value: value
-          })
+          }).catch(tedious.RequestError)
       );
 
     console.log("insert succeeded for", key, value);
@@ -103,15 +102,11 @@ class KeyvMssql extends EventEmitter {
     return false;
   }
   async clear() {
-    //const del = this.mssql.delete(this.entry)
     const client = Sql(this.opts.table);
-    try {
-      return await client.del().from(this.opts.table)
-        .then(() => undefined)
-    } catch (error) {
-      console.log("clear failed", error);
-      return undefined;
-    }
+    //Sql.raw(`DELETE FROM ${this.opts.table}`)
+    await client.del().from(this.opts.table)
+      .then(() => undefined)
+    return undefined
   }
 }
 module.exports = KeyvMssql;
