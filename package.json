@@ -13,7 +13,9 @@
     "store",
     "cache",
     "ttl",
-    "mssql"
+    "mssql",
+    "keyv-mssql",
+    "KeyvMssql"
   ],
   "scripts": {
     "test": "nyc ava --verbose"
