@@ -1,4 +1,4 @@
-MSSQL storage adapter for [Keyv](https://github.com/lukechilds/keyv).
+# MSSQL storage adapter for [Keyv](https://github.com/lukechilds/keyv).
 
 ## Usage
 
