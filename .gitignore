@@ -5,3 +5,4 @@ node_modules
 .ionide
 .github
 yarn-error.log
+.nyc_output
