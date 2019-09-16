@@ -6,3 +6,4 @@ node_modules
 .github
 yarn-error.log
 .nyc_output
+.ensime_cache/**
