@@ -1,25 +1,29 @@
 const tedious = require("tedious");
 const EventEmitter = require("events");
-const config = require("./config").config;
-const knex_config = require("./config").knex;
-const Sql = require("knex")(knex_config);
+const Sql = require("knex");
 
 class KeyvMssql extends EventEmitter {
   constructor(opts) {
     super(opts);
+    // set default values
+    opts.table = opts.table || 'keyv'
+    opts.keySize = opts.keySize || 255
+    opts.client = opts.client || 'mssql'
+    opts.useNullAsDefault = opts.useNullAsDefault || true
     this.ttlSupport = false;
     this.opts = Object.assign({
-        table: config.table,
-        keySize: 255
+        table: opts.table,
+        keySize: opts.keySize
       },
       opts
     );
 
-    Sql.schema
+    this.sql = Sql(opts)
+    this.sql.schema
       .hasTable(this.opts.table)
       .then(async (exists) => {
         if (!exists) {
-          await Sql.schema.createTable(this.opts.table, table => {
+          await this.sql.schema.createTable(this.opts.table, table => {
             table
               .string("key")
               .primary();
@@ -30,13 +34,13 @@ class KeyvMssql extends EventEmitter {
           }).catch(err => this.emit(err));
 
         }
-        this.keyvtable = Sql(this.opts.table)
+        this.keyvtable = this.sql(this.opts.table)
 
       });
   }
 
   async get(key) {
-    const client = Sql(this.opts.table);
+    const client = this.sql(this.opts.table);
     const row = await client
       .select("value")
       .where({
@@ -59,7 +63,7 @@ class KeyvMssql extends EventEmitter {
       .replace(/[(')+]/g, "''")
       .replace(/[\0]+/g, "");
 
-    const client = Sql(this.opts.table);
+    const client = this.sql(this.opts.table);
 
     let insertSucceeded = false;
     await client
@@ -83,7 +87,7 @@ class KeyvMssql extends EventEmitter {
   async delete(key) {
     let doesKeyExist = await this.get(key);
     if (doesKeyExist === undefined) return false;
-    const client = Sql(this.opts.table);
+    const client = this.sql(this.opts.table);
     const exists = await client
       .where({
         key: key
@@ -100,7 +104,7 @@ class KeyvMssql extends EventEmitter {
     return false;
   }
   async clear() {
-    const client = Sql(this.opts.table);
+    const client = this.sql(this.opts.table);
     return await client
       .where('key', 'like', `${this.namespace}:%`)
       .del()
