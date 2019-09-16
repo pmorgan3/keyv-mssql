@@ -1,5 +1,5 @@
 {
-  "name": "keyv-mssql",
+  "name": "@pmorgan3/keyv-mssql",
   "version": "1.0.0",
   "description": "mssql adapter for keyv",
   "main": "src/index.js",
@@ -43,5 +43,12 @@
     "@types/mssql": "^4.3.0",
     "ava": "^2.3.0",
     "nyc": "^14.1.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmorgan3/keyv-mssql.git"
   }
 }
