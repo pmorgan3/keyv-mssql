@@ -34,14 +34,14 @@
     "tedious": "^6.3.0"
   },
   "devDependencies": {
-    "keyv": "^3.1.0",
     "@keyv/test-suite": "^1.6.11",
-    "n": "^6.0.1",
     "@types/events": "^3.0.0",
     "@types/keyv": "^3.1.0",
     "@types/knex": "^0.16.1",
     "@types/mssql": "^4.3.0",
     "ava": "^2.3.0",
+    "keyv": "^3.1.0",
+    "n": "^6.0.1",
     "nyc": "^14.1.1"
   },
   "directories": {
@@ -50,5 +50,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pmorgan3/keyv-mssql.git"
-  }
+  },
+  "private": false
 }

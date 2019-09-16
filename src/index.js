@@ -32,10 +32,8 @@ class KeyvMssql extends EventEmitter {
               .nullable()
               .defaultTo(null);
           }).catch(err => this.emit(err));
-
         }
         this.keyvtable = this.sql(this.opts.table)
-
       });
   }
 
