@@ -3,7 +3,7 @@ MSSQL storage adapter for [Keyv](https://github.com/lukechilds/keyv).
 ## Usage
 
 ```js
-const KeyvMssql = require("KeyvMssql");
+const KeyvMssql = require("keyv-mssql");
 
 const keyv = new KeyvMssql({
   connection: {

@@ -18,7 +18,7 @@ class KeyvMssql extends EventEmitter {
       opts
     );
 
-    this.sql = Sql(opts)
+    this.sql = Sql(opts);
     this.sql.schema
       .hasTable(this.opts.table)
       .then(async (exists) => {
