@@ -1,5 +1,5 @@
 {
-  "name": "@pmorgan3/keyv-mssql",
+  "name": "keyv-mssql",
   "version": "1.0.0",
   "description": "mssql adapter for keyv",
   "main": "src/index.js",
