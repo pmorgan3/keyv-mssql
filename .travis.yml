@@ -5,7 +5,8 @@ node_js:
   - "6"
   - "4"
 addons:
-  apt: mssql-server
+  apt:
+    - mssql-server
 before_script:
   - sqlcmd -c 'create database TestDB;' -U SA -P Password1
 script: yarn test
