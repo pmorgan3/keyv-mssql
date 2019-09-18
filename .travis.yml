@@ -4,6 +4,9 @@ node_js:
   - "8"
   - "6"
   - "4"
+addons:
+  apt:
+    - yarn
 before_script:
   - wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
   - sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list)"
