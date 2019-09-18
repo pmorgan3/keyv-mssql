@@ -5,6 +5,7 @@ Install keyv and keyv-mssql
 ```
 npm install --save keyv keyv-mssql
 ```
+Then Create a new Keyv instance, passing an instanciated KeyvMssql object as the store
 ```js
 const Keyv = require("keyv");
 const KeyvMssql = require("keyv-mssql");
@@ -37,5 +38,6 @@ const store = new KeyvMssql({
   keySize: 255
 });
 ```
+
 
 
