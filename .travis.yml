@@ -6,8 +6,11 @@ node_js:
 addons:
   apt:
     packages:
-      - sqlcmd
+      - mssql-server
 before_script:
+  - wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+  - sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list)"
+  - sudo apt-get update
   - sqlcmd -c 'create database TestDB;' -U SA -P Password1
 script: npm test
 after_success: npm run coverage
