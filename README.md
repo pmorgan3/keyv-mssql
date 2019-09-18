@@ -1,7 +1,10 @@
 # MSSQL storage adapter for [Keyv](https://github.com/lukechilds/keyv)
 
 ## Usage
-
+Install keyv and keyv-mssql
+```
+npm install --save keyv keyv-mssql
+```
 ```js
 const Keyv = require("keyv");
 const KeyvMssql = require("keyv-mssql");
@@ -34,3 +37,5 @@ const store = new KeyvMssql({
   keySize: 255
 });
 ```
+
+
