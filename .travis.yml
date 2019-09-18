@@ -1,16 +1,14 @@
 language: node_js
+dist: bionic
 node_js:
   - "8"
   - "6"
   - "4"
-addons:
-  apt:
-    packages:
-      - mssql-server
 before_script:
   - wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
   - sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/16.04/mssql-server-2017.list)"
   - sudo apt-get update
+  - sudo -E apt-get -yq --no-install-suggests --no-install-recommends $(travis_apt_get_options) install mssql-server
   - sqlcmd -c 'create database TestDB;' -U SA -P Password1
 script: npm test
 after_success: npm run coverage
